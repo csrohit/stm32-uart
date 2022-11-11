@@ -1,17 +1,29 @@
-# Blue Pill - SysTick programming
+# Blue Pill UART communication
 
 ![Build Passing](https://img.shields.io/badge/build-passing-brightgreen) [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
-Configure the systick timer to generate periodic interrupts. Use this timer for generating accurate delay function.
+Programming the UART1 peripheral in STM32F1 controller for bi-directional communication. Echo characters received from UART and transmit time elapsed since boot every 5 seconds.
 
-## SysTick Timer
+## USART
 
-The processor has a 24 bit system timer, SysTick, that counts down from the reload value to zero, reloads and counts down on the subsequent clocks.\
-System Tick Time (SysTick) generates interrupt requests on regular basis. This allows an os to perform context switching to support multitasking. For applications that do not require an OS, the SysTick can be used for time keeping, time measurement or as an interrupt source for tasks that need to be executed regularly.\
-SysTick register can only be accessed using word access.
+The controller has 3 USART peropherals with varying functionality. The peripheral registers can be accessed as half word (16 bit) as well as words (32 bit).\
+This project uses USART1 with pinc PA9 and PA10 for demonstration.
 
-### Control flow
-![Control flow diagram for SysTick timer](https://github.com/csrohit/bluepill-systick/blob/main/docs/filled.png "SysTick timer - control flow diagram")
+## Hardware Setup
+
+Connect the board with host through USB to TTL converter (FTDI board in our case). The connections are described as follows.\
+
+| Pin on Blue Pill  | Pin on FTDI  |
+|------------------ |------------- |
+| PA9               | Rx           |
+| PA10              | Tx           |
+| Gnd               | Gnd          |
+
+![Connection diagram for USART1](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/label.png "USART1: connection diagram")
+
+## Control flow
+
+![Control Flow Diagram](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/flow.png "USART: Control folow diagram")
 
 1. Program the reload value:\
    The reload value can be loaded by setting `LOAD` register. This value is set to 1 less that the number of clock cycles needed for the interrupt as the timer counts both reload value as well as zero. e.g. If the SysTick interrupt is required every 100 clock pulses, set RELOAD to 99.
@@ -73,7 +85,7 @@ This project configures SysTick timer and uses it to generate time accurate dela
 * `src\main.c` - application code
 * `src\startup_stm32f103c8tx.s` - assembly startup script for blue pill board
 * `system_stm32f1xx.c` - clock configuration and system initialization functions
-* `STM32F103.svd` - contains the description of the system contained in Arm Cortex-M processor-based microcontrollers, in particular, the memory mapped registers of peripherals. 
+* `STM32F103.svd` - contains the description of the system contained in Arm Cortex-M processor-based microcontrollers, in particular, the memory mapped registers of peripherals.
 
 ## Run Locally
 
