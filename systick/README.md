@@ -11,7 +11,7 @@ System Tick Time (SysTick) generates interrupt requests on regular basis. This a
 SysTick register can only be accessed using word access.
 
 ### Control flow
-![Control flow diagram for SysTick timer](https://github.com/csrohit/bluepill-systick/blob/main/docs/filled.png "SysTick timer - control flow diagram")
+![Control flow diagram for SysTick timer](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/systick/resources/blob/main/docs/filled.png "SysTick timer - control flow diagram")
 
 1. Program the reload value:\
    The reload value can be loaded by setting `LOAD` register. This value is set to 1 less that the number of clock cycles needed for the interrupt as the timer counts both reload value as well as zero. e.g. If the SysTick interrupt is required every 100 clock pulses, set RELOAD to 99.
@@ -84,15 +84,15 @@ Running the project is super easy. Just clone, build, and flash.
 1. Using https
 
     ```bash
-    git clone https://github.com/csrohit/bluepill-systick.git
-    cd bluepill-systick
+    git clone https://github.com/csrohit/bluepill-baremetal-projects.git
+    cd bluepill-baremetal-projects/systick
     ```
 
 2. Using ssh
 
     ```bash
-    git clone git@github.com:csrohit/bluepill-systick.git
-    cd bluepill-systick
+    git clone git@github.com:csrohit/bluepill-baremetal-projects.git
+    cd bluepill-baremetal-projects/systick
     ```
 
 ## Configuration
