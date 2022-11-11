@@ -19,25 +19,38 @@ Connect the board with host through USB to TTL converter (FTDI board in our case
 | PA10              | Tx           |
 | Gnd               | Gnd          |
 
-![Connection diagram for USART1](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/label.png "USART1: connection diagram")
+![Connection diagram for USART1](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/label.png "Pin connection diagram for usart1")
 
 ## Control flow
 
-![Control Flow Diagram](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/flow.png "USART: Control folow diagram")
+The initialisation function accomplishes following tasks
 
-1. Program the reload value:\
-   The reload value can be loaded by setting `LOAD` register. This value is set to 1 less that the number of clock cycles needed for the interrupt as the timer counts both reload value as well as zero. e.g. If the SysTick interrupt is required every 100 clock pulses, set RELOAD to 99.
-2. Clear current value:\
-   This register can be accessed using `VAL` variable. Bits *24:31* are reserved and 24 bit value can be read from bits *23:0*. Writing any value this register sets it to zero along with setting `COUNT_FLAG` to zero.
-3. Configure SysTick and start:
-   1. Select clock source-\
-        Clock source can be set using `CLKSOURCE` bit (2) of `CTRL` register.\
-        0 - AHB/8\
-        1 - Processor Clock (AHB)
-   2. Enable Tick interrupt-\
-        To enable Tick interrupt set `TICKINT` bit (2) of `CTRL` register.
-   3. Start SysTick timer-\
-        `ENABLE` bit (0) of `CTRL` register enables the counter. When `ENABLE` is set to 1, the counter loads the `RELOAD` value from the `LOAD` register and then counts down. On reaching 0, it sets the `COUNTFLAG` to 1 and optionally asserts the `SysTick` depending on the value of `TICKINT`. It then loads the `RELOAD` value again, and begins counting.
+1. Enables clock signal for USART1 peripheral as well as GPIO Port A, both are connected with APB2 bus.\
+`RCC->APB2ENR |= RCC_APB2ENR_USART1EN | RCC_APB2ENR_IOPAEN;`
+2. Reset mode and configuration for PA9 and PA10.\
+`GPIOA->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_MODE9 | GPIO_CRH_CNF10 | GPIO_CRH_CNF9);`
+3. Set appropriate mode and configuration for PA9 and PA10.
+    * PA9 as push-pull output at 50MHz speed.
+    * PA10 as floating input.
+
+```C
+    GPIOA->CRH |= GPIO_CRH_MODE9_0 | GPIO_CRH_MODE9_1 | GPIO_CRH_CNF9_1;
+    GPIOA->CRH |= GPIO_CRH_CNF10_0;
+```
+
+4. Calculate and set baud rate values in register.
+
+```C
+uint32_t baud = (uint32_t)(SystemCoreClock / baudrate);
+USART1->BRR = baud;
+```
+
+5. Enable transmitter, receiver, transmitter interrupt, receiver interrupt and USART1 clock.\
+`USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE | USART_CR1_UE;`\
+6. Enable interrupt for USART1
+`NVIC_EnableIRQ(USART1_IRQn);`
+
+![Control Flow Diagram](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/flow.png "Control flow diagram for usart")
 
 ## Project Working
 
@@ -96,15 +109,15 @@ Running the project is super easy. Just clone, build, and flash.
 1. Using https
 
     ```bash
-    git clone https://github.com/csrohit/bluepill-systick.git
-    cd bluepill-systick
+    git clone git@github.com:csrohit/bluepill-baremetal-projects.git
+    cd bluepill-baremetal-projects/uart-polling
     ```
 
 2. Using ssh
 
     ```bash
-    git clone git@github.com:csrohit/bluepill-systick.git
-    cd bluepill-systick
+    git clone git@github.com:csrohit/bluepill-baremetal-projects.git
+    cd bluepill-baremetal-projects/uart-polling
     ```
 
 ## Configuration
