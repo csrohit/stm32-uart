@@ -61,8 +61,8 @@ GPIOA->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_MODE9 | GPIO_CRH_CNF10 | GPIO_CRH_CNF
     * PA10 as floating input.
 
 ```C
-    GPIOA->CRH |= GPIO_CRH_MODE9_0 | GPIO_CRH_MODE9_1 | GPIO_CRH_CNF9_1;
-    GPIOA->CRH |= GPIO_CRH_CNF10_0;
+GPIOA->CRH |= GPIO_CRH_MODE9_0 | GPIO_CRH_MODE9_1 | GPIO_CRH_CNF9_1;
+GPIOA->CRH |= GPIO_CRH_CNF10_0;
 ```
 
 4. Calculate and set baud rate values in register.
@@ -72,7 +72,7 @@ uint32_t baud = (uint32_t)(SystemCoreClock / baudrate);
 USART1->BRR = baud;
 ```
 
-5. Enable transmitter, receiver, transmitter interrupt, receiver interrupt and USART1 clock.
+5. Enable transmitter, receiver, receiver interrupt and USART1 clock.
 
 ```C
 USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE | USART_CR1_UE;
@@ -94,7 +94,7 @@ NVIC_EnableIRQ(USART1_IRQn);
 
 ## Project Working
 
-The application prints time elapsed since boot in interval of 5 seconds. Configure serial onitor on host for 9600 baudrate to be able to read and write to blue pill using uart.
+The application prints time elapsed since boot in interval of 5 seconds. Configure serial onitor on host for 9600 baudrate to be able to read and write to blue pill using uart. The expected output is displayed in the *Output* section.
 
 ## Dependencies
 
@@ -115,7 +115,7 @@ The application prints time elapsed since boot in interval of 5 seconds. Configu
     ```bash
     sudo apt install gcc-arm-none-eabi
     ```
-  * For mac, visit ![ARM Downloads](https://developer.arm.com/downloads/-/gnu-rm) page to install arm embedded toolchain.
+  * For mac, visit [ARM Downloads](https://developer.arm.com/downloads/-/gnu-rm) page to install arm embedded toolchain.
 
 * **openocd**\
     It is an Open On Circuit Debugging tool used to flash and debug arm micro controllers. You can install openocd on linux by running command:
@@ -156,7 +156,7 @@ Running the project is super easy. Just clone, build, and flash.
     cd bluepill-baremetal-projects/uart-polling
     ```
 
-## Configuration
+### Configuration
 
 All the configuration required for building this project is given below.
 
@@ -166,11 +166,8 @@ All the configuration required for building this project is given below.
 2. Build type
     In `Makefile`, build type can be configured using variable`DEBUG`. Possible values are `Debug` and `Release`.
 
-3. Binary name
-    In `CMakeLists.txt`, output binary name can be configured using `project(<binary-name>)` macro.
-    ** update above info in `.vscode/launch.json` as well for debugging to work.
 
-## Build
+### Build
 
 Run following command in terminal to generate flashable binaries for blue pill board. Build files will be written to **Build Output Directory** as configured.
 
@@ -178,7 +175,7 @@ Run following command in terminal to generate flashable binaries for blue pill b
 make all
 ```
 
-## Flash
+### Flash
 
 1. Connect STlink to PC and blue pill board using swd headers.
 2. Put blue pill board in programming mode.
@@ -190,7 +187,10 @@ make flash
 
 ## Output
 
-Onboard led connected to Pin C13 can be observed to be blinking every second.
+The following output should be available on serial monitor.
+
+![Output on Serial monitor](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/output.jpg "Serial messages printed on monitor")
+
 
 ## Debug
 
