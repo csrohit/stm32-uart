@@ -11,7 +11,7 @@ This project uses USART1 with pinc PA9 and PA10 for demonstration.
 
 ## Hardware Setup
 
-Connect the board with host through USB to TTL converter (FTDI board in our case). The connections are described as follows.\
+Connect the board with host through USB to TTL converter (FTDI board in our case). The connections are described as follows.
 
 | Pin on Blue Pill  | Pin on FTDI  |
 |------------------ |------------- |
