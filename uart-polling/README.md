@@ -21,14 +21,41 @@ Connect the board with host through USB to TTL converter (FTDI board in our case
 
 ![Connection diagram for USART1](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/label.png "Pin connection diagram for usart1")
 
+
+## Project Structure
+
+* `src` directory contains all source files for the project
+* `include` directory contains all header files for the project
+
+### Source file description
+
+* `STM32F103C8TX_FLASH.ld`  - linker script for generating elf file.
+* `src/main.c` - entry point of application and main code body.
+* `src/uart.c` - Contains definition of non-inline functions for uart.
+* `src/timer.c` - Contains definition of non-inline functions for SysTick timer.
+* `src/startup_stm32f103c8tx.s` - assembly startup script for blue pill board.
+* `include/uart.h` - Contains definitions of inline functions and declaration of all functions for uart.
+* `include/uart.h` - Contains definitions of inline functions and declarations of all functions for SysTick timer.
+* `system_stm32f1xx.c` - clock configuration and system initialization functions.
+* `STM32F103.svd` - contains the description of the system contained in Arm Cortex-M processor-based microcontrollers, in particular, the memory mapped registers of peripherals.
+
+
 ## Control flow
 
 The initialisation function accomplishes following tasks
 
-1. Enables clock signal for USART1 peripheral as well as GPIO Port A, both are connected with APB2 bus.\
-`RCC->APB2ENR |= RCC_APB2ENR_USART1EN | RCC_APB2ENR_IOPAEN;`
-2. Reset mode and configuration for PA9 and PA10.\
-`GPIOA->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_MODE9 | GPIO_CRH_CNF10 | GPIO_CRH_CNF9);`
+1. Enables clock signal for USART1 peripheral as well as GPIO Port A, both are connected with APB2 bus.
+
+```C
+RCC->APB2ENR |= RCC_APB2ENR_USART1EN | RCC_APB2ENR_IOPAEN;
+```
+
+2. Reset mode and configuration for PA9 and PA10.
+
+```C
+GPIOA->CRH &= ~(GPIO_CRH_MODE10 | GPIO_CRH_MODE9 | GPIO_CRH_CNF10 | GPIO_CRH_CNF9);
+```
+
 3. Set appropriate mode and configuration for PA9 and PA10.
     * PA9 as push-pull output at 50MHz speed.
     * PA10 as floating input.
@@ -45,16 +72,29 @@ uint32_t baud = (uint32_t)(SystemCoreClock / baudrate);
 USART1->BRR = baud;
 ```
 
-5. Enable transmitter, receiver, transmitter interrupt, receiver interrupt and USART1 clock.\
-`USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE | USART_CR1_UE;`\
+5. Enable transmitter, receiver, transmitter interrupt, receiver interrupt and USART1 clock.
+
+```C
+USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE | USART_CR1_UE;
+```
+
 6. Enable interrupt for USART1
-`NVIC_EnableIRQ(USART1_IRQn);`
+
+```C
+NVIC_EnableIRQ(USART1_IRQn);
+```
 
 ![Control Flow Diagram](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/flow.png "Control flow diagram for usart")
 
+### Function description
+
+1. `USART1_puts()` - prints a string to USART1.
+2. `USART1_putc()` - waits for the transmit data register (`TDR`) to be empty and loads new character in it.
+3. `USART1_IRQHandler()` - Interrupt service routine for USART1 related interrupts. If `RXNE` is set i.e. receiver not empty interrupt then it echoes the character back to usart.
+
 ## Project Working
 
-This project configures SysTick timer and uses it to generate time accurate delay for blinking an LED. The onboard LED connected to pin C13 blinks every second.
+The application prints time elapsed since boot in interval of 5 seconds. Configure serial onitor on host for 9600 baudrate to be able to read and write to blue pill using uart.
 
 ## Dependencies
 
@@ -62,7 +102,11 @@ This project configures SysTick timer and uses it to generate time accurate dela
     Make utility is required for configuring and building this project. You can install make on linux by running command:
 
     ```bash
+    # for debian/ubuntu
     sudo apt install build-essential
+
+    # for macos
+    brew install make 
     ```
 
 * **gcc-arm-none-eabi toolchain**\
@@ -71,12 +115,17 @@ This project configures SysTick timer and uses it to generate time accurate dela
     ```bash
     sudo apt install gcc-arm-none-eabi
     ```
+  * For mac, visit ![ARM Downloads](https://developer.arm.com/downloads/-/gnu-rm) page to install arm embedded toolchain.
 
 * **openocd**\
     It is an Open On Circuit Debugging tool used to flash and debug arm micro controllers. You can install openocd on linux by running command:
 
    ```bash
+   # for debian/ubuntu
    sudo apt install openocd -y
+
+   # for macos
+   brew install openocd
    ```
 
 * **Cortex Debug extension**\
@@ -86,19 +135,6 @@ This project configures SysTick timer and uses it to generate time accurate dela
      ```bash
     ext install marus25.cortex-debug
     ```
-
-## Project Structure
-
-* `src` directory contains all source files for the project
-* `include` directory contains all header files for the project
-
-### Source file description
-
-* `STM32F103C8TX_FLASH.ld`  - linker script
-* `src\main.c` - application code
-* `src\startup_stm32f103c8tx.s` - assembly startup script for blue pill board
-* `system_stm32f1xx.c` - clock configuration and system initialization functions
-* `STM32F103.svd` - contains the description of the system contained in Arm Cortex-M processor-based microcontrollers, in particular, the memory mapped registers of peripherals.
 
 ## Run Locally
 

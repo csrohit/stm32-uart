@@ -14,12 +14,12 @@
  ******************************************************************************
  */
 
-#include <stm32f1xx.h>
 #include <stdint.h>
-#include <lcd.h>
+#include <stdio.h>
+#include <stm32f1xx.h>
+
 #include <timer.h>
 #include <uart.h>
-#include <stdio.h>
 
 char msg[28];
 
@@ -35,8 +35,7 @@ int main(void)
 	while (1)
 	{	
 		sprintf(msg, "Time elapsed: %lu ms\r\n", msTicks);
-		putstr(msg);
-		GPIOA->ODR ^= 1U << 4;
+		USART1_puts(msg);
 		delay(5000U);
 	}
 	
