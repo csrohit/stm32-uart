@@ -1,4 +1,4 @@
-TARGET := blink
+TARGET := uart
 # debug build?Release
 BUILD_TYPE = Debug
 BUILD_DIR:= build

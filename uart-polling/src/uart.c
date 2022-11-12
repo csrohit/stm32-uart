@@ -14,7 +14,7 @@ void USART1_puts(const char *ch)
 {
     while (*ch)
     {
-        putch(*ch);
+        USART1_putc(*ch);
         ch++;
     }
 }
@@ -24,6 +24,6 @@ void USART1_IRQHandler(void)
     if (USART1->SR & USART_SR_RXNE)
     {
         // this clears RXNE flag
-        putch(USART1->DR & 0xff);
+        USART1_putc(USART1->DR & 0xff);
     }
 }
