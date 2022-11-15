@@ -1,4 +1,4 @@
-# Blue Pill UART communication
+# Blue Pill UART communication - Bare metal project in Embedded C
 
 ![Build Passing](https://img.shields.io/badge/build-passing-brightgreen) [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
