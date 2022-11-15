@@ -22,7 +22,9 @@ Connect the board with host through USB to TTL converter (FTDI board in our case
 ![Connection diagram for USART1](https://github.com/csrohit/bluepill-uart/blob/main/docs/label.png "Pin connection diagram for usart1")
 
 ## Project Variant
+
 STM32F1 Blue pill is a versatile board and can be programmed in various ways. I have created following variations of this project which differs in programming language, use of RTOS and framework. Clone the repository and follow steps mentioned in the respective variations for building and flashing.
+
 1. [Baremetal](baremetal)
 2. libopencm3
 3. FreeRTOS
@@ -30,29 +32,10 @@ STM32F1 Blue pill is a versatile board and can be programmed in various ways. I 
 5. Arduino
 6. CPP Cmake
 
-### Build
-
-Run following command in terminal to generate flashable binaries for blue pill board. Build files will be written to **Build Output Directory** as configured.
-
-```bash
-make all
-```
-
-### Flash
-
-1. Connect STlink to PC and blue pill board using swd headers.
-2. Put blue pill board in programming mode.
-3. Run following to flash board with binary.
-
-```bash
-make flash
-```
-
 ## Output
 
 The application prints time elapsed since boot in interval of 5 seconds. Configure serial onitor on host for 9600 baudrate to be able to read and write to blue pill using uart. Following output can be observed on UART.
 ![Output on Serial monitor](https://github.com/csrohit/bluepill-uart/blob/main/docs/output.jpg "Serial messages printed on monitor")
-
 
 ## Debug
 
