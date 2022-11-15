@@ -19,7 +19,7 @@ Connect the board with host through USB to TTL converter (FTDI board in our case
 | PA10              | Tx           |
 | Gnd               | Gnd          |
 
-![Connection diagram for USART1](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/label.png "Pin connection diagram for usart1")
+![Connection diagram for USART1](https://github.com/csrohit/bluepill-uart/blob/main/docs/label.png "Pin connection diagram for usart1")
 
 
 ## Project Structure
@@ -84,7 +84,7 @@ USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE | USART_CR1_UE;
 NVIC_EnableIRQ(USART1_IRQn);
 ```
 
-![Control Flow Diagram](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/flow.png "Control flow diagram for usart")
+![Control Flow Diagram](https://github.com/csrohit/bluepill-uart/blob/main/docs/github-cover.png "Control flow diagram for usart")
 
 ### Function description
 
@@ -145,15 +145,15 @@ Running the project is super easy. Just clone, build, and flash.
 1. Using https
 
     ```bash
-    git clone git@github.com:csrohit/bluepill-baremetal-projects.git
-    cd bluepill-baremetal-projects/uart-polling
+    git clone git@github.com:csrohit/bluepill-uart.git
+    cd bluepill-uart/baremetal
     ```
 
 2. Using ssh
 
     ```bash
-    git clone git@github.com:csrohit/bluepill-baremetal-projects.git
-    cd bluepill-baremetal-projects/uart-polling
+    git clone git@github.com:csrohit/bluepill-uart.git
+    cd bluepill-uart/baremetal
     ```
 
 ### Configuration
@@ -189,7 +189,7 @@ make flash
 
 The following output should be available on serial monitor.
 
-![Output on Serial monitor](https://github.com/csrohit/bluepill-baremetal-projects/blob/main/uart-polling/resources/output.jpg "Serial messages printed on monitor")
+![Output on Serial monitor](https://github.com/csrohit/bluepill-uart/blob/main/docs/output.jpg "Serial messages printed on monitor")
 
 
 ## Debug
