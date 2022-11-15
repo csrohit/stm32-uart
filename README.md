@@ -34,7 +34,7 @@ STM32F1 Blue pill is a versatile board and can be programmed in various ways. I 
 
 ## Output
 
-The application prints time elapsed since boot in interval of 5 seconds. Configure serial onitor on host for 9600 baudrate to be able to read and write to blue pill using uart. Following output can be observed on UART.
+The application prints time elapsed since boot in interval of 5 seconds. Configure serial onitor on host for 9600 baudrate to be able to read and write to blue pill using uart. Following output can be observed on UART.\
 ![Output on Serial monitor](https://github.com/csrohit/bluepill-uart/blob/main/docs/output.jpg "Serial messages printed on monitor")
 
 ## Debug
