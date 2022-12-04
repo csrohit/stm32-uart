@@ -2,3 +2,5 @@ build
 .DS_Store
 .cortex-debug*
 *.bkp
+*.dtmp
+
