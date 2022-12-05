@@ -48,13 +48,12 @@ INC_FLAGS 	= $(addprefix -I,$(INC_DIRS))
 # Target-specific flags
 CPU_FLAGS	?= -mfloat-abi=$(FLOAT_ABI) -m$(INSTR_SET) -mcpu=$(CPU)
 
-CPPFLAGS	?=$(DEFS) $(INC_FLAGS)
+CPPFLAGS	?= -MMD $(DEFS) $(INC_FLAGS)
 CFLAGS		?=$(CPU_FLAGS) $(OPT)
 CXXFLAGS 	:=$(CFLAGS) -fno-exceptions -fno-rtti
 LDFLAGS		?=$(CPU_FLAGS)
 
-# dependency
-CXXFLAGS += -M
+
 
 # Do not link stdlib with executable
 CFLAGS		+= -nostdlib -fno-tree-loop-distribute-patterns -fdata-sections -ffunction-sections
@@ -93,10 +92,10 @@ $(BUILD_DIR)/%.s:%.cpp
 	@echo "AS" $< " ==> " $@
 	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o $@ -S $<
 
-# $(BUILD_DIR)/%.o:%.c
-# 	@mkdir -p $(dir $@)
-# 	@echo "CC" $< " ==> " $@
-# 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+$(BUILD_DIR)/%.o:%.c
+	@mkdir -p $(dir $@)
+	@echo "CC" $< " ==> " $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
 
 $(BUILD_DIR)/%.o:%.cpp
 	@mkdir -p $(dir $@)
@@ -105,7 +104,7 @@ $(BUILD_DIR)/%.o:%.cpp
 	
 $(BUILD_DIR)/$(TARGET).elf: $(OBJS)
 	@echo "Linking sources into "$@
-	@$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^
 
 
 flash: bin
@@ -117,3 +116,6 @@ debug: all
 
 clean:
 	rm -rf build
+
+
+-include $(OBJS:%.o=%.d)
