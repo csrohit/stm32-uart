@@ -15,7 +15,7 @@ CXXSTD		:= c++17
 
 # Project specific configuration
 BUILD_DIR 	:= build
-BUILD_TYPE	?= Debug
+BUILD_TYPE	?= Release
 SRC_DIR 	:= src
 INC_DIRS	= include
 
@@ -48,12 +48,14 @@ INC_FLAGS 	= $(addprefix -I,$(INC_DIRS))
 CPU_FLAGS	?= -mfloat-abi=$(FLOAT_ABI) -m$(INSTR_SET) -mcpu=$(CPU)
 
 CPPFLAGS	?=$(DEFS) $(INC_FLAGS)
-CFLAGS		?=$(CPU_FLAGS) $(OPT)
+CFLAGS		?=$(CPU_FLAGS)
 CXXFLAGS 	:=$(CFLAGS) -fno-exceptions -fno-rtti
 LDFLAGS		?=$(CPU_FLAGS)
 
 ifeq ($(BUILD_TYPE), Debug)
-CFLAGS += -g -gdwarf-2
+CFLAGS 		+= -g -gdwarf-2
+else
+CFLAGS		+= $(OPT)
 endif
 
 # Do not link stdlib with executable
@@ -70,7 +72,7 @@ CXXFLAGS	+= -Wall -Wextra -Wundef -Wshadow -Wredundant-decls -Weffc++ -Werror
 LDFLAGS		+= -T $(LDSCRIPT)
 LDFLAGS		+= -Wl,-Map=$(basename $@).map,--gc-sections,-cref,--print-memory-usage
 
-all: bin size
+all: size bin
 size: $(BUILD_DIR)/$(TARGET).size
 elf: $(BUILD_DIR)/$(TARGET).elf
 bin: $(BUILD_DIR)/$(TARGET).bin

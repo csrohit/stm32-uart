@@ -7,7 +7,7 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "./build/blink.elf",
+            "executable": "./build/dma-usart.elf",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",

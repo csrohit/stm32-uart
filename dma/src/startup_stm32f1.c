@@ -89,7 +89,7 @@ void DMA2_Channel4_5_IRQHandler(void) __attribute__((weak, alias("Default_Handle
 
 // Define the veector table
 uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
-    &_stack_top,
+    (uint32_t)&_stack_top,
     (uint32_t)Reset_Handler,
     (uint32_t)NMI_Handler,
     (uint32_t)HardFault_Handler,
@@ -193,7 +193,7 @@ void Reset_Handler(void)
   {
     *pBssData++ = 0;
   }
-
+  SystemCoreClockUpdate();
   // now invoke main
   main();
 }
