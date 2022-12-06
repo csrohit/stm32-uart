@@ -1,10 +1,8 @@
 #include<timer.h>
 
-
-
 volatile uint32_t msTicks = 0;
 
-inline void SysTick_Handler(void)
+void SysTick_Handler(void)
 {
 	msTicks++;
 }
