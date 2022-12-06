@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stm32f1xx.h>
 
-#include <timer.h>
+#include <time.h>
 #include <uart.h>
 
 char msg[28] = "Hello world\r\n\0";
