@@ -135,3 +135,22 @@ make flash
 3. Click in Run and Debug option in VsCode sidebar. Then launch Cortex Debug target.
 
 Happy debugging....
+
+### Dependency option
+-M
+    Outputs a rule suitable for makefile, does not compile the file
+    The generated rule does not have a command
+
+-MM
+    Outputs a rule suitable for makefile, does not compile the file.
+    In the dependencies only include user files, do not include system header files
+
+-MT/-MQ (-MM -MT abc.o) => change the target
+    This changes the name of the target
+-MT => generates the same string as provided
+-MQ => replaces value of the make variable in the target (expansation)
+
+-MD => D represents that the preprocessor output should be generated as a side effect and the main compilation happens
+    If -o options is specified then it is taken as name for the preprocessor output with .d
+    else name of input file is taken with extensions as .d
+    To override the name of the pre-processor output file -MF option should be used

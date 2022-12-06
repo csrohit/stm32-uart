@@ -20,6 +20,7 @@
 #include <stm32f1xx.h>
 #include <stdint.h>
 
+#pragma once
 class GPIO
 {
 public:
@@ -111,19 +112,10 @@ public:
     GPIO(GPIO_TypeDef *port, PIN newPin) : pin{newPin}, PORT{port} {}
 
     /**
-     * @brief Enable clock source for Port A
+     * @brief Enable Clock source for GPIO port
+     * @param port GPIO port instance
      */
-    static void enable_PortA();
-
-    /**
-     * @brief Enable clock source for Port B
-     */
-    static void enable_PortB();
-
-    /**
-     * @brief Enable clock source for Port C
-     */
-    static void enable_PortC();
+    constexpr static void enable_port(GPIO_TypeDef *port);
 
     /**
      * @brief Destroy the GPIO object
@@ -169,11 +161,20 @@ inline GPIO &GPIO::operator=(const GPIO &gpio)
     return *this;
 }
 
-inline void GPIO::enable_PortA() { RCC->APB2ENR |= RCC_APB2ENR_IOPAEN; }
-inline void GPIO::enable_PortB() { RCC->APB2ENR |= RCC_APB2ENR_IOPBEN; }
-inline void GPIO::enable_PortC()
+constexpr inline void GPIO::enable_port(GPIO_TypeDef *port)
 {
-    RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
+    if (port == GPIOA)
+    {
+        RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+    }
+    else if (port == GPIOB)
+    {
+        RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+    }
+    else if (port == GPIOC)
+    {
+        RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
+    }
 }
 
 inline void GPIO::setMode(MODE mode)
@@ -211,8 +212,8 @@ inline void GPIO::setConfig(GPIO_TypeDef *port, PIN newPin, CNF config)
     }
 }
 
-inline void GPIO::toggle() { this->PORT->ODR ^= 1 << this->pin; };
-inline void GPIO::toggle(GPIO_TypeDef *port, PIN newPin) { port->ODR ^= 1 << newPin; };
+inline void GPIO::toggle() { this->PORT->ODR ^= 1 << this->pin; }
+inline void GPIO::toggle(GPIO_TypeDef *port, PIN newPin) { port->ODR ^= 1 << newPin; }
 
 inline void GPIO::write(PIN_STATE state)
 {

@@ -2,7 +2,8 @@
 // See: RM0008 10.1.2 Interrupt and exception vectors, Table 63. Vector table for other STM32F10xxx devices
 
 #include <stdint.h>
-
+#include <stm32f1xx.h>
+#include <main.h>
 extern uint32_t _etext;
 extern uint32_t _sdata;
 extern uint32_t _edata;
@@ -12,11 +13,9 @@ extern uint32_t _sbss;
 extern uint32_t _ebss;
 extern uint32_t _stack_top;
 
-int main(void);
 
 void Reset_Handler(void);
 void Default_Handler(void);
-
 // Weak function prototypes for the vector table so that they can easily be redefined
 void NMI_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void HardFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
@@ -178,21 +177,19 @@ void Default_Handler(void)
 void Reset_Handler(void)
 {
   // copy .data section to SRAM
-  uint8_t *pSramData = (uint8_t *)&_sdata;    // sram
-  uint8_t *pFlashData = (uint8_t *)&_la_data; // flash
-  uint32_t data_size = (uint32_t)&_edata - (uint32_t)&_sdata;
-  for (uint32_t i = 0; i < data_size; i++)
+  uint32_t *start_sram = (uint32_t *)&_sdata;
+  uint32_t *start_flash = (uint32_t *)&_la_data;
+  while (start_sram < (uint32_t *)&_edata)
   {
-    *pSramData++ = *pFlashData++;
+    *start_sram++ = *start_flash++;
   }
 
-  // init. the .bss section to zero in SRAM
-  uint32_t bss_size = (uint32_t)&_ebss - (uint32_t)&_sbss;
-  uint8_t *pBssData = (uint8_t *)&_sbss;
-  for (uint32_t i = 0; i < bss_size; i++)
+  uint32_t *start_bss = (uint32_t *)&_sbss;
+  while (start_bss < (uint32_t *)&_ebss)
   {
-    *pBssData++ = 0;
+    *start_bss++ = 0;
   }
+  
   SystemCoreClockUpdate();
   // now invoke main
   main();

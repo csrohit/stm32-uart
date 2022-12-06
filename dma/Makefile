@@ -10,14 +10,14 @@ FLOAT_ABI	= soft
 
 # compiler option
 OPT			:= -Os
-CSTD		?= c11
-CXXSTD		:= c++17
+CSTD		?= gnu11
+CXXSTD		:= gnu++17
 
 # Project specific configuration
 BUILD_DIR 	:= build
-BUILD_TYPE	?= Release
+BUILD_TYPE	?= Debug
 SRC_DIR 	:= src
-INC_DIRS	= include
+INC_DIRS	:= include
 
 
 PREFIX		?= arm-none-eabi
@@ -35,32 +35,33 @@ GDB			:= $(PREFIX)-gdb
 SRCS 		:= $(shell find $(SRC_DIR) -name '*.cpp' -or -name '*.c')	
 OBJS 		:= $(addsuffix .o,$(basename $(SRCS)))			# replace .c with .o
 OBJS 		:= $(addprefix $(BUILD_DIR)/,$(OBJS))			# replace .c with .o
-
+ASMS 		:= $(addsuffix .s,$(basename $(OBJS)))
 
 # Define stm32 family macro
-DEFS		+= -D$(MCU_FAMILY)
+DEFS		+=-D$(MCU_FAMILY)
 
 # header library include flsgs
-INC_FLAGS 	= $(addprefix -I,$(INC_DIRS))
+INC_FLAGS 	=$(addprefix -I,$(INC_DIRS))
 
 
 # Target-specific flags
-CPU_FLAGS	?= -mfloat-abi=$(FLOAT_ABI) -m$(INSTR_SET) -mcpu=$(CPU)
+CPU_FLAGS	?=-mfloat-abi=$(FLOAT_ABI) -m$(INSTR_SET) -mcpu=$(CPU)
+CPPFLAGS	?=$(DEFS) $(INC_FLAGS) -MMD
 
-CPPFLAGS	?=$(DEFS) $(INC_FLAGS)
-CFLAGS		?=$(CPU_FLAGS)
-CXXFLAGS 	:=$(CFLAGS) -fno-exceptions -fno-rtti
-LDFLAGS		?=$(CPU_FLAGS)
-
+# optiomization level according to build type
 ifeq ($(BUILD_TYPE), Debug)
 CFLAGS 		+= -g -gdwarf-2
+CXXFLAGS 	+= -g -gdwarf-2
+LDFLAGS 	+= -g -gdwarf-2
 else
 CFLAGS		+= $(OPT)
+CXXFLAGS	+= $(OPT)
+ASFLAGS		+= $(OPT)
 endif
 
 # Do not link stdlib with executable
 CFLAGS		+= -nostdlib -fno-tree-loop-distribute-patterns -fdata-sections -ffunction-sections
-CXXFLAGS	+= -nostdlib -fno-tree-loop-distribute-patterns -fdata-sections -ffunction-sections
+CXXFLAGS	+= -nostdlib -fno-tree-loop-distribute-patterns -fdata-sections -ffunction-sections -fno-exceptions -fno-rtti
 LDFLAGS		+= -nostdlib 
 
 
@@ -68,47 +69,69 @@ LDFLAGS		+= -nostdlib
 CFLAGS		+= -Wall -Wextra -Wundef -Wshadow -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 CXXFLAGS	+= -Wall -Wextra -Wundef -Wshadow -Wredundant-decls -Weffc++ -Werror
 
-
+# Linker options
 LDFLAGS		+= -T $(LDSCRIPT)
 LDFLAGS		+= -Wl,-Map=$(basename $@).map,--gc-sections,-cref,--print-memory-usage
 
-all: size bin
-size: $(BUILD_DIR)/$(TARGET).size
-elf: $(BUILD_DIR)/$(TARGET).elf
-bin: $(BUILD_DIR)/$(TARGET).bin
-hex: $(BUILD_DIR)/$(TARGET).hex
-srec: $(BUILD_DIR)/$(TARGET).srec
-list: $(BUILD_DIR)/$(TARGET).list
+all		: size bin
+size	: $(BUILD_DIR)/$(TARGET).size
+elf		: $(BUILD_DIR)/$(TARGET).elf
+bin		: $(BUILD_DIR)/$(TARGET).bin
+hex		: $(BUILD_DIR)/$(TARGET).hex
+srec	: $(BUILD_DIR)/$(TARGET).srec
+list	: $(BUILD_DIR)/$(TARGET).list
+asm		: $(ASMS)
 
-
-%.size: %.elf
-	@$(SIZE) $<
-
+# binary file to flash on target
 %.bin: %.elf
 	@echo "COPY " $< " => " $@
 	@$(OBJCOPY) -Obinary $(*).elf $(*).bin
 
+# executable object files for debugging
+%.hex: %.elf
+	$(OBJCOPY) -Oihex $(*).elf $(*).hex
+
+%.srec: %.elf
+	$(OBJCOPY) -Osrec $(*).elf $(*).srec
+
+%.list: %.elf
+	$(OBJDUMP) -S $(*).elf > $(*).list
+
+%.size: %.elf
+	@echo "Section wise usage: "
+	@$(SIZE) $<
+
+# Build assembly files
+$(BUILD_DIR)/%.s:%.c
+	@mkdir -p $(dir $@)
+	@echo "AS" $< " ==> " $@
+	@$(CC) $(CPU_FLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ -S $<
+
+$(BUILD_DIR)/%.s:%.cpp
+	@mkdir -p $(dir $@)
+	@echo "AS" $< " ==> " $@
+	@$(CXX) $(CPU_FLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $@ -S $<
+
+# Object files
 $(BUILD_DIR)/%.o:%.c
 	@mkdir -p $(dir $@)
 	@echo "CC" $< " ==> " $@
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+	@$(CC) $(CPU_FLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
 
 $(BUILD_DIR)/%.o:%.cpp
 	@mkdir -p $(dir $@)
 	@echo "CXX" $< " ==> " $@
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ -c $<
-	
+	@$(CXX) $(CPU_FLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $@ -c $<
+
+# final executable object file
 $(BUILD_DIR)/$(TARGET).elf: $(OBJS)
 	@echo "Linking sources into "$@
-	@$(CC) $(LDFLAGS) -o $@ $^
+	@$(CC) $(CPU_FLAGS) $(LDFLAGS) -o $@ $^
 
-
+# upload binary to stm32
 flash: bin
 	st-flash write $(BUILD_DIR)/$(TARGET).bin 0x8000000
-	
-debug: CFLAGS 		+= -g -gdwarf-2
-debug: CXXFLAGS 	+= -g -gdwarf-2
-debug: all
 
+# remove generated files 
 clean:
 	rm -rf build

@@ -15,9 +15,9 @@ CXXSTD		:= c++17
 
 # Project specific configuration
 BUILD_DIR 	:= build
-BUILD_TYPE	?= Debug
+BUILD_TYPE	?= Release
 SRC_DIR 	:= src lib/gpio
-INC_DIRS	= include lib/gpio
+INC_DIRS	= include lib/gpio lib/usart lib/system
 
 
 PREFIX		?= arm-none-eabi
@@ -47,18 +47,22 @@ INC_FLAGS 	= $(addprefix -I,$(INC_DIRS))
 
 # Target-specific flags
 CPU_FLAGS	?= -mfloat-abi=$(FLOAT_ABI) -m$(INSTR_SET) -mcpu=$(CPU)
+CPPFLAGS	?=$(DEFS) $(INC_FLAGS) -MMD 
 
-CPPFLAGS	?=$(DEFS) $(INC_FLAGS)
-CFLAGS		?=$(CPU_FLAGS) $(OPT)
-CXXFLAGS 	:=$(CFLAGS) -fno-exceptions -fno-rtti
-LDFLAGS		?=$(CPU_FLAGS)
+ifeq ($(BUILD_TYPE), Debug)
+CFLAGS 		+= -g -gdwarf-2
+CXXFLAGS 	+= -g -gdwarf-2
+LDFLAGS 	+= -g -gdwarf-2
 
-# dependency
-CXXFLAGS += -M
+else
+CFLAGS		+= $(OPT)
+CXXFLAGS	+= $(OPT)
+ASFLAGS		+= $(OPT)
+endif
 
 # Do not link stdlib with executable
 CFLAGS		+= -nostdlib -fno-tree-loop-distribute-patterns -fdata-sections -ffunction-sections
-CXXFLAGS	+= -nostdlib -fno-tree-loop-distribute-patterns -fdata-sections -ffunction-sections
+CXXFLAGS	+= -nostdlib -fno-tree-loop-distribute-patterns -fdata-sections -ffunction-sections  -fno-exceptions -fno-rtti
 LDFLAGS		+= -nostdlib -fno-tree-loop-distribute-patterns 
 
 
@@ -70,15 +74,15 @@ CXXFLAGS	+= -Wall -Wextra -Wundef -Wshadow -Wredundant-decls -Weffc++ -Werror
 LDFLAGS		+= -T $(LDSCRIPT)
 LDFLAGS		+= -Wl,-Map=$(basename $@).map
 
-all: size bin
-size: $(BUILD_DIR)/$(TARGET).size
-elf: $(BUILD_DIR)/$(TARGET).elf
-bin: $(BUILD_DIR)/$(TARGET).bin
-hex: $(BUILD_DIR)/$(TARGET).hex
-srec: $(BUILD_DIR)/$(TARGET).srec
-list: $(BUILD_DIR)/$(TARGET).list
+all		: size bin
+size	: $(BUILD_DIR)/$(TARGET).size
+elf		: $(BUILD_DIR)/$(TARGET).elf
+bin		: $(BUILD_DIR)/$(TARGET).bin
+hex		: $(BUILD_DIR)/$(TARGET).hex
+srec	: $(BUILD_DIR)/$(TARGET).srec
+list	: $(BUILD_DIR)/$(TARGET).list
 
-asm: $(ASMS)
+asm		: $(ASMS)
 
 
 %.size: %.elf
@@ -91,21 +95,21 @@ asm: $(ASMS)
 $(BUILD_DIR)/%.s:%.cpp
 	@mkdir -p $(dir $@)
 	@echo "AS" $< " ==> " $@
-	$(CXX) $(CPPFLAGS) $(CXXLAGS) -o $@ -S $<
+	$(CXX) $(CPU_FLAGS) $(CPPFLAGS) $(CXXLAGS) -o $@ -S $<
 
-# $(BUILD_DIR)/%.o:%.c
-# 	@mkdir -p $(dir $@)
-# 	@echo "CC" $< " ==> " $@
-# 	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+$(BUILD_DIR)/%.o:%.c
+	@mkdir -p $(dir $@)
+	@echo "CC" $< " ==> " $@
+	$(CC) $(CPU_FLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
 
 $(BUILD_DIR)/%.o:%.cpp
 	@mkdir -p $(dir $@)
 	@echo "CXX" $< " ==> " $@
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ -c $<
+	$(CXX) $(CPU_FLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $@ -c $<
 	
 $(BUILD_DIR)/$(TARGET).elf: $(OBJS)
 	@echo "Linking sources into "$@
-	@$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(CPU_FLAGS) $(LDFLAGS) -o $@ $^
 
 
 flash: bin
@@ -117,3 +121,6 @@ debug: all
 
 clean:
 	rm -rf build
+
+
+-include $(OBJS:%.o=%.d)

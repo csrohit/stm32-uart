@@ -181,13 +181,19 @@ void Default_Handler(void)
 // Command: reset memory and restart user program
 [[noreturn]] void Reset_Handler(void)
 {
-  // copy .data section to SRAM
-  uint32_t data_size = (uint32_t)&_edata - (uint32_t)&_sdata;
-  
-  std::copy(&_la_data, &_la_data + data_size, &_sdata);
 
-  // init. the .bss section to zero in SRAM
-  std::fill(&_sbss, &_ebss, 0);
+  uint32_t *start_sram = (uint32_t *)&_sdata;
+  uint32_t *start_flash = (uint32_t *)&_la_data;
+  while (start_sram < (uint32_t *)&_edata)
+  {
+    *start_sram++ = *start_flash++;
+  }
+
+  uint32_t *start_bss = (uint32_t *)&_sbss;
+  while (start_bss < (uint32_t *)&_ebss)
+  {
+    *start_bss++ = 0;
+  }
 
   // now invoke main
   main();
@@ -195,14 +201,4 @@ void Default_Handler(void)
   {
     __asm("nop");
   }
-  
-}
-
-void *memcpy(void *dest, const void *src, size_t n)
-{
-    for (size_t i = 0; i < n; i++)
-    {
-        ((char*)dest)[i] = ((char*)src)[i];
-    }
-    return dest;
 }
