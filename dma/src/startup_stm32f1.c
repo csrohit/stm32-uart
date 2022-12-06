@@ -2,6 +2,7 @@
 // See: RM0008 10.1.2 Interrupt and exception vectors, Table 63. Vector table for other STM32F10xxx devices
 
 #include <stdint.h>
+#include <stm32f1xx.h>
 
 extern uint32_t _etext;
 extern uint32_t _sdata;
