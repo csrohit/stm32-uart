@@ -2,5 +2,12 @@
     "files.associations": {
         "time.h": "c",
         "timer.h": "c"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/csrohit/code/blue-pill/uart/dma/build",
+            "binaryPath": "/Users/csrohit/code/blue-pill/uart/dma/build/dma-usart.elf",
+            "binaryArgs": []
+        }
+    ]
 }
