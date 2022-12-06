@@ -1,5 +1,8 @@
-#pragma once
+
 #include<stdint.h>
+
+#ifndef __TIMER_H__
+#define __TIMER_H__
 
 /**
  * @brief Stores number of systick interrupts
@@ -15,7 +18,9 @@ extern volatile uint32_t msTicks;
 void delay(uint32_t ms);
 
 /**
- * @brief Event handler for systick timer overflow event
- * As address of this function is to be inserted in the vector table, this should not be made inline
+ * @brief Interrupt handler for systick timer
+ * should not be made inline as address of this handler is to be placed in the vector table
  */
 void SysTick_Handler(void);
+
+#endif

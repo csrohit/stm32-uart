@@ -1,6 +1,8 @@
 #ifndef __MAIN_H__
 
 #define __MAIN_H__
+int main(void);
+
 /**
  * @brief enable clock for dma1 peripheral registers
  */
@@ -12,8 +14,8 @@ void dma1_clock_enable(void);
 void dma_usart_tx_init(void);
 
 /**
- * @brief Configure DMA1 channel 4 to work with USART1 transmitter
- * It reads from memory and writes to USART data register
+ * @brief Configure DMA1 channel 5 to work with USART1 receiver
+ * It reads from USART data register and writes to memory
  */
 void dma_usart_rx_init(void);
 
@@ -23,7 +25,7 @@ void dma_usart_rx_init(void);
 void dma_usart_tx_enable(void);
 
 /**
- * @brief Enable DMA to accept request for channel 4
+ * @brief Enable DMA to accept request for channel 5
  */
 void dma_usart_rx_enable(void);
 

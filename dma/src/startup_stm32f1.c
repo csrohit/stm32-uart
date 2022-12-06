@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stm32f1xx.h>
-
+#include <main.h>
 extern uint32_t _etext;
 extern uint32_t _sdata;
 extern uint32_t _edata;
@@ -13,11 +13,9 @@ extern uint32_t _sbss;
 extern uint32_t _ebss;
 extern uint32_t _stack_top;
 
-int main(void);
 
 void Reset_Handler(void);
 void Default_Handler(void);
-
 // Weak function prototypes for the vector table so that they can easily be redefined
 void NMI_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void HardFault_Handler(void) __attribute__((weak, alias("Default_Handler")));

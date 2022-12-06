@@ -15,16 +15,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stm32f1xx.h>
-
-#include <time.h>
+#include <timer.h>
 #include <main.h>
 
-#define RX_BUFFER_LENGTH 20U
-#define TX_BUFFER_LENGTH 13U
-
-const char *msg = "Hello world\r\n\0";
-
-char buff[RX_BUFFER_LENGTH];
+const char * msg = "Hello world\r\n\0";
 
 void dma1_clock_enable(void)
 {
@@ -41,7 +35,7 @@ void dma_usart_tx_init(void)
 	DMA1_Channel4->CMAR = (uint32_t)msg;
 
 	// set number od dma transactions
-	DMA1_Channel4->CNDTR = RX_BUFFER_LENGTH;
+	DMA1_Channel4->CNDTR = 13;
 
 	// set memory address incement by 1byte
 	DMA1_Channel4->CCR |= DMA_CCR_MINC;
@@ -73,7 +67,7 @@ void usart1_init(void)
 	GPIOA->CRH |= GPIO_CRH_CNF10_0;
 
 	// set baud rate as 9600
-	uint32_t baud = (uint32_t)(SystemCoreClock / 9600);
+	uint32_t baud = (uint32_t)(SystemCoreClock / 115200);
 	USART1->BRR = baud;
 
 	// Enable transmitter
@@ -91,13 +85,8 @@ void usart1_enable(void)
 int main(void)
 {
 	dma1_clock_enable();
-	SysTick_Config(SystemCoreClock / 1000);
 	usart1_init();
 	dma_usart_tx_init();
 	dma_usart_tx_enable();
 	usart1_enable();
-
-	while (1)
-	{
-	}
 }
