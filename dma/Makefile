@@ -135,3 +135,6 @@ flash: bin
 # remove generated files 
 clean:
 	rm -rf build
+
+# include generated rules
+-include $(OBJS:%.o=%.d)
