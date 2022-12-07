@@ -81,24 +81,7 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)USART3_IRQHandler,
     (uint32_t)EXTI15_10_IRQHandler,
     (uint32_t)RTC_Alarm_IRQHandler,
-    (uint32_t)USB_Wakeup_IRQHandler,
-    (uint32_t)TIM8_BRK_IRQHandler,
-    (uint32_t)TIM8_UP_IRQHandler,
-    (uint32_t)TIM8_TRG_COM_IRQHandler,
-    (uint32_t)TIM8_CC_IRQHandler,
-    (uint32_t)ADC3_IRQHandler,
-    (uint32_t)FSMC_IRQHandler,
-    (uint32_t)SDIO_IRQHandler,
-    (uint32_t)TIM5_IRQHandler,
-    (uint32_t)SPI3_IRQHandler,
-    (uint32_t)UART4_IRQHandler,
-    (uint32_t)UART5_IRQHandler,
-    (uint32_t)TIM6_IRQHandler,
-    (uint32_t)TIM7_IRQHandler,
-    (uint32_t)DMA2_Channel1_IRQHandler,
-    (uint32_t)DMA2_Channel2_IRQHandler,
-    (uint32_t)DMA2_Channel3_IRQHandler,
-    (uint32_t)DMA2_Channel4_5_IRQHandler,
+    (uint32_t)USB_Wakeup_IRQHandler
 };
 
 
