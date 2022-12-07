@@ -4,6 +4,15 @@
 
 Programming the UART1 peripheral in STM32F1 controller for bi-directional communication. Echo characters received from UART and transmit time elapsed since boot every 5 seconds.
 
+## Project Variant
+
+STM32F1 Blue pill is a versatile board and can be programmed in various ways. I have created following variations of this project which differs in programming language, use of RTOS and framework. Clone the repository and follow steps mentioned in the respective variations for building and flashing.
+
+1. [Polling](polling)
+2. [DMA in Circular Mode](dma-circular)
+3. [DMA in 1 Shot Mode](dma-1shot)
+4. [DMA in Echo Mode](dma-echo)
+
 ## USART
 
 The controller has 3 USART peropherals with varying functionality. The peripheral registers can be accessed as half word (16 bit) as well as words (32 bit).\
@@ -20,15 +29,6 @@ Connect the board with host through USB to TTL converter (FTDI board in our case
 | Gnd               | Gnd          |
 
 ![Connection diagram for USART1](https://github.com/csrohit/bluepill-uart/blob/main/docs/label.png "Pin connection diagram for usart1")
-
-## Project Variant
-
-STM32F1 Blue pill is a versatile board and can be programmed in various ways. I have created following variations of this project which differs in programming language, use of RTOS and framework. Clone the repository and follow steps mentioned in the respective variations for building and flashing.
-
-1. [Baremetal](baremetal)
-2. [DMA in Circular Mode](dma-circular)
-3. [DMA in 1 Shot Mode](dma-1shot)
-4. [DMA in Echo Mode](dma-echo)
 
 ## Output
 
