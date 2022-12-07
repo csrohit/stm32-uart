@@ -1,8 +1,8 @@
-# USART communication using DMA in one shot mode
+# USART communication using DMA in Circular mode
 
 Communication between PC and STM32 using USART and DMA peripherals.
 
-Transmit data using USART1 and DMA in one shot mode without interruption of CPU. The DMA is restarted adter every 2 seconds. This project does not require any IDE like CubeIde, any text editor will work including notepad, vim. For better debugging experience, VSCode is preferred.
+Transmit data using USART1 and DMA in continuous mode without interruption of CPU. This project does not require any IDE like CubeIde, any text editor will work including notepad, vim. For better debugging experience, VSCode is preferred.
 
 ![Build Passing](https://img.shields.io/badge/build-passing-brightgreen) [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
@@ -127,8 +127,8 @@ Connect the board with host through USB to TTL converter (FTDI board in our case
 
 ## Output
 
-"Hello world" messages are visible on the terminal arriving every 2 seconds as seen below.
-![Serial prompt at 115200 baudrate](docs/out_one_shot.png "Output on terminal")
+"Hello world" messages are visible on the terminal arriving continuously dues to circular mode of operation as seen below.
+![Serial prompt at 115200 baudrate](docs/out_115200_circ.png "Output on terminal")
 
 ## Debug
 

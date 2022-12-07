@@ -25,6 +25,12 @@ void dma_usart_rx_init(void);
 void dma_usart_tx_enable(void);
 
 /**
+ * @brief Disable DMA to accept request for Channel 4
+ * 
+ */
+void dma_usart_tx_disable(void);
+
+/**
  * @brief Enable DMA to accept request for channel 5
  */
 void dma_usart_rx_enable(void);
@@ -39,5 +45,12 @@ void usart1_init(void);
  * @brief Enable USART1 prescalers and output
  */
 void usart1_enable(void);
+
+
+/**
+ * @brief Interrupt handler for DMA channel 4
+ * 
+ */
+void DMA1_Channel4_IRQHandler(void);
 
 #endif
