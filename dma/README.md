@@ -5,8 +5,9 @@ Communication between PC and STM32 using USART and DMA peripherals.
 Transmit data using USART1 and DMA in echo mode without interruption of CPU. DMA will accept 10 bytes from UART and echo back the same along with a carriage return and newline character. This project does not require any IDE like CubeIde, any text editor will work including notepad and vim. For better debugging experience, VSCode is preferred.
 
 ![Build Passing](https://img.shields.io/badge/build-passing-brightgreen) [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-
-![Build Passing](https://img.shields.io/badge/build-passing-brightgreen) [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
+## Other variants
+1. [DMA Operation in Circular Mode](../tree/8043bca)
+2. [DMA Operation in 1 Shot Mode](../tree/de3e527)
 
 ## Dependencies
 
