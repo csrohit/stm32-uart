@@ -18,7 +18,7 @@
 #include <timer.h>
 #include <main.h>
 
-const char * msg = "Hello world\r\n\0";
+const char *msg = "Hello world\r\n\0";
 
 void dma1_clock_enable(void)
 {
@@ -41,15 +41,33 @@ void dma_usart_tx_init(void)
 	DMA1_Channel4->CCR |= DMA_CCR_MINC;
 
 	// enable circular mode
-	DMA1_Channel4->CCR |= DMA_CCR_CIRC;
+	// DMA1_Channel4->CCR |= DMA_CCR_CIRC;
 
 	// set data transfer direction - memory -> peripheral
 	DMA1_Channel4->CCR |= DMA_CCR_DIR;
+
+	// enable transmission complete interrupt
+	DMA1_Channel4->CCR |= DMA_CCR_TCIE;
 }
 
 void dma_usart_tx_enable(void)
 {
 	DMA1_Channel4->CCR |= DMA_CCR_EN;
+}
+
+void dma_usart_tx_disable(void)
+{
+	DMA1_Channel4->CCR &= ~DMA_CCR_EN;
+}
+
+void DMA1_Channel4_IRQHandler(void)
+{
+	if (DMA1->ISR & DMA_ISR_TCIF4)
+	{
+		// clear interrupt flasg
+		DMA1->IFCR |= DMA_IFCR_CGIF4;
+		dma_usart_tx_disable();
+	}
 }
 
 void usart1_init(void)
@@ -84,9 +102,27 @@ void usart1_enable(void)
 
 int main(void)
 {
+	SysTick_Config(SystemCoreClock/1000);
+
 	dma1_clock_enable();
 	usart1_init();
 	dma_usart_tx_init();
 	dma_usart_tx_enable();
 	usart1_enable();
+
+	// enable interrupt for channel 4
+	NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+	
+	dma_usart_tx_enable();
+
+	usart1_enable();
+
+	while (1)
+	{
+		delay(2000);
+
+		// reload no. of transactions
+		DMA1_Channel4->CNDTR = 13;
+		dma_usart_tx_enable();
+	}
 }
