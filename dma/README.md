@@ -8,8 +8,8 @@ Transmit data using USART1 and DMA in echo mode without interruption of CPU. DMA
 
 ## Other variants
 
-1. [DMA Operation in Circular Mode](../../8043bca)
-2. [DMA Operation in 1 Shot Mode](../../de3e527)
+1. [DMA Operation in Circular Mode](../../../tree/8043bca)
+2. [DMA Operation in 1 Shot Mode](../../../tree/de3e527)
 
 ## Dependencies
 
