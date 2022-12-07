@@ -26,14 +26,9 @@ Connect the board with host through USB to TTL converter (FTDI board in our case
 STM32F1 Blue pill is a versatile board and can be programmed in various ways. I have created following variations of this project which differs in programming language, use of RTOS and framework. Clone the repository and follow steps mentioned in the respective variations for building and flashing.
 
 1. [Baremetal](baremetal)
-2. libopencm3
-3. FreeRTOS
-4. Zephyr RTOS
-5. Arduino
-6. CPP Cmake
-7. ST HAL
-8. [DMA in Circular Mode](dma-circular)
-9. [DMA in 1 Shot mode](dma-1shot)
+2. [DMA in Circular Mode](dma-circular)
+3. [DMA in 1 Shot Mode](dma-1shot)
+4. [DMA in Echo Mode](dma-echo)
 
 ## Output
 
