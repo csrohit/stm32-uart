@@ -1,9 +1,25 @@
-// startup declarations and function for the STM32F103C8T6
-// See: RM0008 10.1.2 Interrupt and exception vectors, Table 63. Vector table for other STM32F10xxx devices
+/**
+ * @file startup_stm32f1.c
+ * @author Rohit Nimkar (nehalnimkar@gmail.com)
+ * @brief startup declarations and function for the STM32F1 series controllers
+ *        See: RM0008 10.1.2 Interrupt and exception vectors, Table 63. Vector table for other STM32F10xxx devices
+ * 
+ * @version 1.2
+ * @date 2022-12-07
+ * 
+ * @copyright Copyright (c) 2022
+ * @attention
+ * 
+ * This software component is licensed by Rohit Nimkar under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at: opensource.org/licenses/BSD-3-Clause
+ *
+ */
 
 #include <stdint.h>
 #include <stm32f1xx.h>
 #include <main.h>
+
 extern uint32_t _etext;
 extern uint32_t _sdata;
 extern uint32_t _edata;
@@ -16,7 +32,6 @@ extern uint32_t _stack_top;
 
 void Reset_Handler(void);
 void Default_Handler(void);
-// Weak function prototypes for the vector table so that they can easily be redefined
 void NMI_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void HardFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void MemManage_Handler(void) __attribute__((weak, alias("Default_Handler")));
@@ -86,7 +101,7 @@ void DMA2_Channel2_IRQHandler(void) __attribute__((weak, alias("Default_Handler"
 void DMA2_Channel3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Channel4_5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
-// Define the veector table
+// Define the vector table
 uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&_stack_top,
     (uint32_t)Reset_Handler,
@@ -95,20 +110,20 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)MemManage_Handler,
     (uint32_t)BusFault_Handler,
     (uint32_t)UsageFault_Handler,
-    0, // reserved
-    0, // reserved
-    0, // reserved
-    0, // reserved
+    0,        // reserved
+    0,        // reserved
+    0,        // reserved
+    0,        // reserved
     (uint32_t)SVC_Handler,
     (uint32_t)DebugMon_Handler,
-    0, // reserved
+    0,        // reserved
     (uint32_t)PendSV_Handler,
     (uint32_t)SysTick_Handler,
     (uint32_t)WWDG_IRQHandler,
     (uint32_t)PVD_IRQHandler,
     (uint32_t)TAMP_STAMP_IRQHandler,
     (uint32_t)RTC_WKUP_IRQHandler,
-    0, // Flash global interrupt
+    0,        // Flash global interrupt
     (uint32_t)RCC_IRQHandler,
     (uint32_t)EXTI0_IRQHandler,
     (uint32_t)EXTI1_IRQHandler,
@@ -166,14 +181,14 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)DMA2_Channel4_5_IRQHandler,
 };
 
-// Command: a default "do nothing" handler
+
 void Default_Handler(void)
 {
   while (1)
     ;
 }
 
-// Command: reset memory and restart user program
+
 void Reset_Handler(void)
 {
   // copy .data section to SRAM
@@ -184,12 +199,13 @@ void Reset_Handler(void)
     *start_sram++ = *start_flash++;
   }
 
+  // copy .bss section to SRAM
   uint32_t *start_bss = (uint32_t *)&_sbss;
   while (start_bss < (uint32_t *)&_ebss)
   {
     *start_bss++ = 0;
   }
-  
+
   SystemCoreClockUpdate();
   // now invoke main
   main();
