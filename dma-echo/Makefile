@@ -126,7 +126,7 @@ $(BUILD_DIR)/%.o:%.cpp
 # final executable object file
 $(BUILD_DIR)/$(TARGET).elf: $(OBJS) $(LDSCRIPT)
 	@echo "Linking sources into "$@
-	$(CC) $(CPU_FLAGS) $(LDFLAGS) -o $@ $(OBJS)
+	@$(CC) $(CPU_FLAGS) $(LDFLAGS) -o $@ $(OBJS)
 
 # upload binary to stm32
 flash: bin
