@@ -1,3 +1,19 @@
+/**
+ * @file stm32f1.ld
+ * @author Rohit Nimkar (nehalnimkar@gmail.com)
+ * @brief Linker script for stm32f103c8t6 micro-controller
+ * @version 1.2
+ * @date 2022-12-07
+ * 
+ * @copyright Copyright (c) 2022
+ * @attention
+ * 
+ * This software component is licensed by Rohit Nimkar under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at: opensource.org/licenses/BSD-3-Clause
+ *
+ */
+
 ENTRY(Reset_Handler)
 
 MEMORY

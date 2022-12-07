@@ -1,8 +1,8 @@
-# USART communication using DMA in echo mode
+# USART communication using DMA in one shot mode
 
 Communication between PC and STM32 using USART and DMA peripherals.
 
-Transmit data using USART1 and DMA in echo mode without interruption of CPU. DMA will accept 10 bytes from UART and echo back the same along with a carriage return and newline character. This project does not require any IDE like CubeIde, any text editor will work including notepad, vim. For better debugging experience, VSCode is preferred.
+Transmit data using USART1 and DMA in one shot mode without interruption of CPU. The DMA is restarted adter every 2 seconds. This project does not require any IDE like CubeIde, any text editor will work including notepad, vim. For better debugging experience, VSCode is preferred.
 
 ![Build Passing](https://img.shields.io/badge/build-passing-brightgreen) [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
@@ -107,9 +107,9 @@ make
     The *Boot0* jumper is set to *0*, set it to *1* and reset the device.
 3. Run following to flash board with binary.
 
-    ```bash
-    make flash
-    ```
+```bash
+make flash
+```
 
 4. Done.
 
@@ -127,9 +127,10 @@ Connect the board with host through USB to TTL converter (FTDI board in our case
 
 ## Output
 
-Enter 10 bytes on the serial prompt, the controller will echo the same characters and place the cursor on the new line.
-![Serial prompt at 115200 baudrate](docs/out_echo.png "Output on terminal")
+"Hello world" messages are visible on the terminal arriving every 2 seconds as seen below.
+![Serial prompt at 115200 baudrate](docs/out_one_shot.png "Output on terminal")
 
 ## Debug
 
 Click in `Run and Debug` option in VsCode sidebar. Then launch `Cortex Debug` target.
+
