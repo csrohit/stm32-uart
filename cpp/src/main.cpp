@@ -45,12 +45,12 @@ int main(void)
   my_usart->enable_dma_request(USART::dma_req_t::TransmitterRequest);
 
   DMA_Channel *tx_channel = (DMA_Channel *)0x40020044;
-  tx_channel->set_peripheral_address((uint32_t *)&USART1->DR);
-  tx_channel->set_memory_address((uint32_t *)msg);
-  tx_channel->set_transfer_direction(DMA_Channel::MemoryToPeripheral);
+  tx_channel->setPeripheralAddress((uint32_t *)&USART1->DR);
+  tx_channel->setMemoryAddress((uint32_t *)msg);
+  tx_channel->setTransferDirection(DMA_Channel::MemoryToPeripheral);
   tx_channel->enableMemoryIncrementMode();
   tx_channel->enableCircularMode();
-  tx_channel->enable_interrupt(DMA_Channel::TransferComplete);
+  tx_channel->enableInterrupt(DMA_Channel::TransferComplete);
   tx_channel->reload(15);
   tx_channel->start();
 

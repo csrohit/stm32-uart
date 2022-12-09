@@ -80,35 +80,67 @@ private:
     volatile uint32_t *CMAR;
 
 public:
-
-    inline static DMA_Channel * get_instance(DMA_Channel_TypeDef* dma_channel_base){
+    /**
+     * @brief Get the instance DMA channel
+     *
+     * @param dma_channel_base Base address of the DMA channel
+     * @return DMA_Channel* pointer to the DMA_Channel object
+     */
+    inline static DMA_Channel *get_instance(DMA_Channel_TypeDef *dma_channel_base)
+    {
         return static_cast<DMA_Channel *>(static_cast<void *>(dma_channel_base));
     }
+
+    /**
+     * @brief Reload the pe ding transactions value register
+     *
+     * @param value value to be reloaded into the counter
+     */
     constexpr inline void reload(uint16_t value)
     {
         CNDTR = 0x0000ffff & value;
     }
 
+    /**
+     * @brief Start the DMA channel to accept the requests from memory/peripheral
+     */
     inline void start()
     {
         CCR |= DMA_CCR_EN;
     }
+
+    /**
+     * @brief Stop the DMA from accepting trnasction requests from memory/peripherals
+     */
     inline void stop()
     {
         this->CCR |= DMA_CCR_EN;
     }
 
-    inline void set_peripheral_address(uint32_t *address)
+    /**
+     * @brief Set the peripheral address for DMA Channel
+     *
+     * @param address address of the peripheral data register
+     */
+    inline void setPeripheralAddress(uint32_t *address)
     {
         this->CPAR = address;
     }
 
-    inline void set_memory_address(uint32_t *address)
+    /**
+     * @brief Set the memory address for DMA Channel
+     * @param address starting address of the memory
+     */
+    inline void setMemoryAddress(uint32_t *address)
     {
         this->CMAR = address;
     }
 
-    inline void enable_interrupt(intr_t interrupt)
+    /**
+     * @brief Enable interrupt for the DMA channel
+     * @param interrupt interrupt to be enabled
+     */
+    inline void enableInterrupt(intr_t interrupt)
     {
         uint32_t bits = 0;
         if ((interrupt & TransferComplete) > 0)
@@ -129,7 +161,11 @@ public:
         this->CCR |= bits;
     }
 
-    inline void disable_interrupt(intr_t interrupt)
+    /**
+     * @brief Disable the interrupt for the DMA Channel
+     * @param interrupt interrupt to be disabled
+     */
+    inline void disableInterrupt(intr_t interrupt)
     {
         uint32_t bits = 0;
         if (interrupt & TransferComplete)
@@ -150,7 +186,12 @@ public:
         this->CCR &= ~bits;
     }
 
-    inline void set_transfer_direction(dir_t direction)
+    /**
+     * @brief Set the transfer direction for the transaction
+     * The direction can be Memory to Peripheral or from Peripheral to Memory
+     * @param direction the direction of the DMA Transaction
+     */
+    inline void setTransferDirection(dir_t direction)
     {
         if (direction == PeripheralToMemory)
         {
@@ -162,48 +203,101 @@ public:
         }
     }
 
+    /**
+     * @brief Enable DMA Channel in circular mode
+     * After the number of transations pending reaches 0, the initial number of transactions is reloaded.
+     * The memory and peripheral address are reloaded to the initial values and transaction starts again
+     */
     inline void enableCircularMode()
     {
         this->CCR |= DMA_CCR_CIRC;
     }
 
+    /**
+     * @brief Disable circular mode
+     * DMA stops after the current transaction is completed
+     */
     inline void disableCircularMode()
     {
         this->CCR &= ~DMA_CCR_CIRC;
     }
 
+    /**
+     * @brief Enable memory to memory mode
+     */
+    inline void enableMem2MemMode()
+    {
+        CCR |= DMA_CCR_MEM2MEM;
+    }
+
+    /**
+     * @brief Disable memory to memory mode
+     */
+    inline void disableMem2MemMode()
+    {
+        CCR &= ~DMA_CCR_MEM2MEM;
+    }
+
+    /**
+     * @brief Enable peripheral increment mode
+     * After every transfter the peripheral address is incremented by the specified increment value
+     */
     inline void enablePeripheralIncrementMode()
     {
         this->CCR |= DMA_CCR_PINC;
     }
 
+    /**
+     * @brief Disable peripheral increment mode
+     * The peripheral address remains same for all the transactions
+     */
     inline void disablePeripheralIncrementMode()
     {
         this->CCR &= ~DMA_CCR_PINC;
     }
-
+    /**
+     * @brief Enable memory increment mode
+     * After every transfter the memory address is incremented by the specified increment value
+     */
     inline void enableMemoryIncrementMode()
     {
         this->CCR |= DMA_CCR_MINC;
     }
-
+    /**
+     * @brief Disable memory increment mode
+     * The memory address remains same for all the transactions
+     */
     inline void disableMemoryIncrementMode()
     {
         this->CCR &= ~DMA_CCR_MINC;
     }
 
+    /**
+     * @brief Set the peripheral size 
+     * If enabled the peripheral address will be incremented by this number
+     * @param size size of the peripheral 
+     */
     inline void set_peripheral_size(mem_peri_size_t size)
     {
         this->CCR &= DMA_CCR_PSIZE;
         this->CCR |= (size & 0b11) << DMA_CCR_PSIZE_Pos;
     }
-
+    /**
+     * @brief Set the memory size 
+     * If enabled the memory address will be incremented by this number
+     * @param size size of the memory 
+     */
     inline void set_memory_size(mem_peri_size_t size)
     {
         this->CCR &= DMA_CCR_MSIZE;
         this->CCR |= (size & 0b11) << DMA_CCR_MSIZE_Pos;
     }
 
+    /**
+     * @brief Set the channel priority level
+     * The conflicts between the different DMA channels are reolved according tho the assigned priority
+     * @param prio priority for the channel
+     */
     inline void set_priority(prio_t prio)
     {
         this->CCR &= ~DMA_CCR_PL;
