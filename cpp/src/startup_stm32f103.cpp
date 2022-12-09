@@ -1,8 +1,25 @@
-// startup declarations and function for the STM32F103C8T6
-// See: RM0008 10.1.2 Interrupt and exception vectors, Table 63. Vector table for other STM32F10xxx devices
+/**
+ * @file startup_stm32f1.cpp
+ * @author Rohit Nimkar (nehalnimkar@gmail.com)
+ * @brief startup declarations and function for the STM32F1 series controllers
+ *        See: RM0008 10.1.2 Interrupt and exception vectors, Table 63. Vector table for other STM32F10xxx devices
+ * 
+ * @version 1.2
+ * @date 2022-12-07
+ * 
+ * @copyright Copyright (c) 2022
+ * @attention
+ * 
+ * This software component is licensed by Rohit Nimkar under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at: opensource.org/licenses/BSD-3-Clause
+ *
+ */
+
 
 #include <stdint.h>
-#include <algorithm>
+
+
 extern uint32_t _etext;
 extern uint32_t _sdata;
 extern uint32_t _edata;
@@ -16,9 +33,16 @@ int main(void);
 
 extern "C"
 {
+  /**
+   * @brief Infinite while loop
+   * 
+   */
   [[noreturn]] void Reset_Handler(void);
+
+  /**
+   * @brief Initialize .data and .bss sections, call CMSIS systemInit and main functions
+   */
   void Default_Handler(void);
-  void *memcpy(void *dest, const void *src, size_t n);
 }
 
 // Weak function prototypes for the vector table so that they can easily be redefined
@@ -137,7 +161,7 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)USB_Wakeup_IRQHandler
 };
 
-// Command: a default "do nothing" handler
+
 void Default_Handler(void)
 {
   while (1)

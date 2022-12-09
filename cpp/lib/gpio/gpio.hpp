@@ -1,21 +1,21 @@
 #pragma once
 
 /**
- ******************************************************************************
- * @file           : gpio.hpp
- * @author         : Rohit Nimkar <nehalnimkar@gmail.com> <https://csrohit.github.io>
- * @brief          : GPIO library header file
- *                   This source file contains definitions of inline function and all declarations
- ******************************************************************************
+ * @file gpio.hpp
+ * @author Rohit Nimkar (nehalnimkar@gmail.com)
+ * @brief Declaration of functionality related to GPIO
+ * @version 1.2
+ * @date 2022-12-07
+ *
+ * @copyright Copyright (c) 2022
  * @attention
  *
  * This software component is licensed by Rohit Nimkar under BSD 3-Clause license,
  * the "License"; You may not use this file except in compliance with the
- * License. You may obtain a copy of the License at:
- *                        opensource.org/licenses/BSD-3-Clause
+ * License. You may obtain a copy of the License at: opensource.org/licenses/BSD-3-Clause
  *
- ******************************************************************************
  */
+
 
 #include <stm32f1xx.h>
 #include <stdint.h>

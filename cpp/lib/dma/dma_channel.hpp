@@ -91,7 +91,7 @@ public:
 
     inline void start()
     {
-        CCR |= 0x01;
+        CCR |= DMA_CCR_EN;
     }
     inline void stop()
     {

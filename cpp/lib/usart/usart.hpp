@@ -1,3 +1,20 @@
+/**
+ * @file usart.hpp
+ * @author Rohit Nimkar (nehalnimkar@gmail.com)
+ * @brief Declaration of functionality related to USART
+ * @version 1.2
+ * @date 2022-12-07
+ *
+ * @copyright Copyright (c) 2022
+ * @attention
+ *
+ * This software component is licensed by Rohit Nimkar under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at: opensource.org/licenses/BSD-3-Clause
+ *
+ */
+
+
 #pragma once
 #include <stm32f1xx.h>
 #include <system.hpp>
@@ -55,12 +72,14 @@ public:
         CR1 &= ~peripheral;
     }
 
-    inline void start(){
+    inline void start()
+    {
         CR1 |= peripheral_t::Usart;
     }
 
-    inline void stop(){
-        CR1 &=~ peripheral_t::Usart;
+    inline void stop()
+    {
+        CR1 &= ~peripheral_t::Usart;
     }
 
     inline void enable_interrupt(intr_t interrupt)
@@ -81,5 +100,41 @@ public:
     inline void disable_dma_request(dma_req_t dma_request)
     {
         CR3 &= ~dma_request;
+    }
+
+    /**
+     * @brief Transmit character
+     * If data register is not empty then character will be transmitted after current transaction
+     * @param ch character to be transmitted
+     */
+    inline void tx_char(uint8_t ch)
+    {
+        while (!(SR & USART_SR_TXE))
+            ;
+        DR = ch;
+    }
+
+    /**
+     * @brief Transmit string 
+     *
+     * @param str pointer to NULL terminated string
+     */
+    inline void tx_str(const uint8_t *str)
+    {
+        while (*str)
+        {
+            tx_char(*str);
+            str++;
+        }
+    }
+
+    /**
+     * @brief Receive a character
+     * The function will wait for the receiver to receive a charater and then return the received data
+     * @return uint8_t 
+     */
+    inline uint8_t rx_char(){
+        while(!(SR & USART_SR_RXNE));
+        return DR;
     }
 };
