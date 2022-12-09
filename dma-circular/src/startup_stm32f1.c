@@ -102,7 +102,7 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
 };
 
 
-void __attribute__((noreturn)) Default_Handler(void)
+void Default_Handler(void)
 {
   while (1)
     ;

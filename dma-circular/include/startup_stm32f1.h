@@ -41,7 +41,7 @@ extern uint32_t _ebss;
 extern uint32_t _stack_top;
 
 void __attribute__((noreturn)) Reset_Handler(void);
-void __attribute__((noreturn)) Default_Handler(void);
+void Default_Handler(void);
 
 void __attribute__((weak, alias("Default_Handler"))) NMI_Handler(void);
 void __attribute__((weak, alias("Default_Handler"))) HardFault_Handler(void);
