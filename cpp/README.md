@@ -1,10 +1,7 @@
-# Writing Startup script for Cortex M controllers in C++
+# DMA operation with USART1 in C++
 
-A definitive guide to developing the entire embedded C++ project for ARM Cortexm-M micro-controllers. This projects ais to provide as deep insight into the development of startup script in c++.
+Achieve USART communication with DMA in Circular, 1shot and Echo mode. The complete development flow is independent of any IDE or tools. This project code can be editied on any text editor and uploaded to the board using drivers provided by STMicro-electronics.
 
-## Project Working
-
-This project configures SysTick timer and uses it to generate time accurate delay for blinking an LED. The onboard LED connected to pin C13 blinks every second.
 
 ## Dependencies
 
