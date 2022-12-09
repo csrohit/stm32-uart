@@ -73,23 +73,6 @@ void USART3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void EXTI15_10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void RTC_Alarm_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void USB_Wakeup_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM8_BRK_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM8_UP_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM8_TRG_COM_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM8_CC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void ADC3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void FSMC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SDIO_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void SPI3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART4_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void UART5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM6_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM7_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void DMA2_Channel1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void DMA2_Channel2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void DMA2_Channel3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void DMA2_Channel4_5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 // Define the veector table
 uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
@@ -151,24 +134,7 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)USART3_IRQHandler,
     (uint32_t)EXTI15_10_IRQHandler,
     (uint32_t)RTC_Alarm_IRQHandler,
-    (uint32_t)USB_Wakeup_IRQHandler,
-    (uint32_t)TIM8_BRK_IRQHandler,
-    (uint32_t)TIM8_UP_IRQHandler,
-    (uint32_t)TIM8_TRG_COM_IRQHandler,
-    (uint32_t)TIM8_CC_IRQHandler,
-    (uint32_t)ADC3_IRQHandler,
-    (uint32_t)FSMC_IRQHandler,
-    (uint32_t)SDIO_IRQHandler,
-    (uint32_t)TIM5_IRQHandler,
-    (uint32_t)SPI3_IRQHandler,
-    (uint32_t)UART4_IRQHandler,
-    (uint32_t)UART5_IRQHandler,
-    (uint32_t)TIM6_IRQHandler,
-    (uint32_t)TIM7_IRQHandler,
-    (uint32_t)DMA2_Channel1_IRQHandler,
-    (uint32_t)DMA2_Channel2_IRQHandler,
-    (uint32_t)DMA2_Channel3_IRQHandler,
-    (uint32_t)DMA2_Channel4_5_IRQHandler,
+    (uint32_t)USB_Wakeup_IRQHandler
 };
 
 // Command: a default "do nothing" handler

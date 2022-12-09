@@ -15,9 +15,9 @@ CXXSTD		:= c++17
 
 # Project specific configuration
 BUILD_DIR 	:= build
-BUILD_TYPE	?= Release
-SRC_DIR 	:= src lib/gpio
-INC_DIRS	= include lib/gpio lib/usart lib/system
+BUILD_TYPE	?= Debug
+SRC_DIR 	:= src lib/system
+INC_DIRS	=  lib/dma include lib/usart lib/system
 
 
 PREFIX		?= arm-none-eabi
@@ -74,7 +74,7 @@ CXXFLAGS	+= -Wall -Wextra -Wundef -Wshadow -Wredundant-decls -Weffc++ -Werror
 LDFLAGS		+= -T $(LDSCRIPT)
 LDFLAGS		+= -Wl,-Map=$(basename $@).map
 
-all		: size bin
+all		: size bin list
 size	: $(BUILD_DIR)/$(TARGET).size
 elf		: $(BUILD_DIR)/$(TARGET).elf
 bin		: $(BUILD_DIR)/$(TARGET).bin
@@ -84,13 +84,24 @@ list	: $(BUILD_DIR)/$(TARGET).list
 
 asm		: $(ASMS)
 
-
-%.size: %.elf
-	@$(SIZE) $<
-
+# binary file to flash on target
 %.bin: %.elf
 	@echo "COPY " $< " => " $@
 	@$(OBJCOPY) -Obinary $(*).elf $(*).bin
+
+# executable object files for debugging
+%.hex: %.elf
+	$(OBJCOPY) -Oihex $(*).elf $(*).hex
+
+%.srec: %.elf
+	$(OBJCOPY) -Osrec $(*).elf $(*).srec
+
+%.list: %.elf
+	$(OBJDUMP) -S $(*).elf > $(*).list
+
+%.size: %.elf
+	@echo "Section wise usage: "
+	@$(SIZE) $<
 
 $(BUILD_DIR)/%.s:%.cpp
 	@mkdir -p $(dir $@)
