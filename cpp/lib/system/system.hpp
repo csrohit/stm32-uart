@@ -15,6 +15,9 @@
  */
 
 #include <stm32f1xx.h>
+
+#pragma once
+
 namespace Core
 {
     extern uint32_t clock;

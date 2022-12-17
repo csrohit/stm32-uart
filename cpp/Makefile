@@ -15,7 +15,7 @@ CXXSTD		:= c++17
 
 # Project specific configuration
 BUILD_DIR 	:= build
-BUILD_TYPE	?= Debug
+BUILD_TYPE	?= Release
 SRC_DIR 	:= src lib/system
 INC_DIRS	=  lib/dma include lib/usart lib/system
 

@@ -13,9 +13,10 @@
  * License. You may obtain a copy of the License at: opensource.org/licenses/BSD-3-Clause
  *
  */
-
+#include <cstddef>
 #include "dma.hpp"
 #include <stm32f1xx.h>
+#include <type_traits>
 #pragma once
 
 class DMA_Channel
@@ -273,9 +274,9 @@ public:
     }
 
     /**
-     * @brief Set the peripheral size 
+     * @brief Set the peripheral size
      * If enabled the peripheral address will be incremented by this number
-     * @param size size of the peripheral 
+     * @param size size of the peripheral
      */
     inline void set_peripheral_size(mem_peri_size_t size)
     {
@@ -283,9 +284,9 @@ public:
         this->CCR |= (size & 0b11) << DMA_CCR_PSIZE_Pos;
     }
     /**
-     * @brief Set the memory size 
+     * @brief Set the memory size
      * If enabled the memory address will be incremented by this number
-     * @param size size of the memory 
+     * @param size size of the memory
      */
     inline void set_memory_size(mem_peri_size_t size)
     {
@@ -304,3 +305,5 @@ public:
         this->CCR |= (prio & 0b11) << DMA_CCR_PL_Pos;
     }
 };
+
+static_assert(sizeof(DMA_Channel) == 16, "Invalid size");
