@@ -1,4 +1,4 @@
-TARGET = blink
+TARGET = cpp-usart
 
 
 # Configure micro-controller
@@ -17,7 +17,7 @@ CXXSTD		:= c++17
 BUILD_DIR 	:= build
 BUILD_TYPE	?= Release
 SRC_DIR 	:= src lib/system
-INC_DIRS	=  lib/dma include lib/usart lib/system
+INC_DIRS	= include lib/usart lib/system
 
 
 PREFIX		?= arm-none-eabi
@@ -68,11 +68,12 @@ LDFLAGS		+= -nostdlib -fno-tree-loop-distribute-patterns
 
 # Warning options for C and CXX compiler
 CFLAGS		+= -Wall -Wextra -Wundef -Wshadow -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
-CXXFLAGS	+= -Wall -Wextra -Wundef -Wshadow -Wredundant-decls -Weffc++ -Werror
+CXXFLAGS	+= -Wall -Wextra -Wundef -Wshadow -Wredundant-decls  -Werror
 
+# -Weffc++
 
 LDFLAGS		+= -T $(LDSCRIPT)
-LDFLAGS		+= -Wl,-Map=$(basename $@).map
+LDFLAGS		+= -Wl,-Map=$(basename $@).map,--gc-sections,-cref,--print-memory-usage
 
 all		: size bin list
 size	: $(BUILD_DIR)/$(TARGET).size
@@ -106,29 +107,25 @@ asm		: $(ASMS)
 $(BUILD_DIR)/%.s:%.cpp
 	@mkdir -p $(dir $@)
 	@echo "AS" $< " ==> " $@
-	$(CXX) $(CPU_FLAGS) $(CPPFLAGS) $(CXXLAGS) -o $@ -S $<
+	@$(CXX) $(CPU_FLAGS) $(CPPFLAGS) $(CXXLAGS) -o $@ -S $<
 
 $(BUILD_DIR)/%.o:%.c
 	@mkdir -p $(dir $@)
 	@echo "CC" $< " ==> " $@
-	$(CC) $(CPU_FLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+	@$(CC) $(CPU_FLAGS) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
 
 $(BUILD_DIR)/%.o:%.cpp
 	@mkdir -p $(dir $@)
 	@echo "CXX" $< " ==> " $@
-	$(CXX) $(CPU_FLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $@ -c $<
+	@$(CXX) $(CPU_FLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $@ -c $<
 	
 $(BUILD_DIR)/$(TARGET).elf: $(OBJS)
 	@echo "Linking sources into "$@
-	$(CC) $(CPU_FLAGS) $(LDFLAGS) -o $@ $^
+	@$(CC) $(CPU_FLAGS) $(LDFLAGS) -o $@ $^
 
 
 flash: bin
 	st-flash write $(BUILD_DIR)/$(TARGET).bin 0x8000000
-	
-debug: CFLAGS 		+= -g -gdwarf-2
-debug: CXXFLAGS 	+= -g -gdwarf-2
-debug: all
 
 clean:
 	rm -rf build

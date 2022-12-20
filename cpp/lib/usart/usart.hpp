@@ -27,7 +27,7 @@ public:
         Usart1 = USART1_BASE,
         Usart2 = USART2_BASE,
         Usart3 = USART3_BASE
-    } usart_t;
+    };
 
     enum Parity : uint8_t
     {
@@ -158,16 +158,9 @@ private:
     volatile uint32_t CR3;  /*!< USART Control register 3,                Address offset: 0x14 */
     volatile uint32_t GTPR; /*!< USART Guard time and prescaler register, Address offset: 0x18 */
 public:
-    /**
-     * @brief Get reference to a USART instance
-     *
-     * @param usart required hardware usart instance
-     * @return void* pointer to the USART object
-     */
-    void *operator new(size_t, usart_t usart)
+    USART()
     {
-
-        if (usart == Usart1)
+        if (this == reinterpret_cast<USART *>(Usart1))
         {
             // enable clock for GPIOA and USART1
             RCC->APB2ENR |= RCC_APB2ENR_USART1EN | RCC_APB2ENR_IOPAEN;
@@ -181,7 +174,25 @@ public:
             // PA10 as floating input
             GPIOA->CRH |= GPIO_CRH_CNF10_0;
         }
+    }
 
+    ~USART()
+    {
+        if (this == reinterpret_cast<USART *>(Usart1))
+        {
+            // disable clock for USART1 peripheral
+            RCC->APB2ENR &= ~RCC_APB2ENR_USART1EN;
+        }
+    }
+
+    /**
+     * @brief Get reference to a USART instance
+     *
+     * @param usart required hardware usart instance
+     * @return void* pointer to the USART object
+     */
+    void *operator new(size_t, UsartInstance usart)
+    {
         return reinterpret_cast<void *>(usart);
     }
 

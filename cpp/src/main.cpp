@@ -19,26 +19,25 @@
 #include <system.hpp>
 #include <usart.hpp>
 
-const char * msg = "Hello World\r\n\0";
-
+const char *msg = "Hello World\r\n\0";
 
 int main(void)
 {
-  USART  &ttl = *new (USART::Usart1) USART;
+	USART &ttl = *new (USART::Usart1) USART;
 
-  ttl.set_baudrate(USART::BR_9600);
-  ttl.setTransmitterState(USART::Enabled);
-  ttl.setUsartState(USART::Enabled);
-  
+	ttl.set_baudrate(USART::BR_9600);
+	ttl.setTransmitterState(USART::Enabled);
+	ttl.setUsartState(USART::Enabled);
+
 	int ret = SysTick_Config(8000);
 	if (ret < 0)
 		while (1)
 			;
 
 	while (1)
-	{	
-    ttl.tx_str(msg);
-    
+	{
+		ttl.tx_str(msg);
+
 		delay_ms(2000U);
-	}	
+	}
 }
