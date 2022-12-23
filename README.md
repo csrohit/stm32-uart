@@ -12,6 +12,7 @@ STM32F1 Blue pill is a versatile board and can be programmed in various ways. I 
 2. [DMA in Circular Mode](dma-circular)
 3. [DMA in 1 Shot Mode](dma-1shot)
 4. [DMA in Echo Mode](dma-echo)
+5. [C++ project](cpp)
 
 ## USART
 
