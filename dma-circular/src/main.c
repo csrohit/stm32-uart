@@ -38,14 +38,29 @@ void dma_usart_tx_init(void)
 	// set number od dma transactions
 	DMA1_Channel4->CNDTR = 13;
 
+	// set priprity to lowest value
+	DMA1_Channel4->CCR &= ~(DMA_CCR_PL_0 | DMA_CCR_PL_1);
+
+	// set data transfer direction - memory -> peripheral
+	DMA1_Channel4->CCR |= DMA_CCR_DIR;
+
+	// set memory address size to 8 bits (Address is incremented by this much)
+	DMA1_Channel4->CCR &= ~(DMA_CCR_MSIZE_0 | DMA_CCR_MSIZE_0);
+
+	// set peripheral size to 8 bits (Has no effect as this is not incremented)
+	DMA1_Channel4->CCR &= ~(DMA_CCR_PSIZE_0 | DMA_CCR_PSIZE_0);
+
 	// set memory address incement by 1byte
 	DMA1_Channel4->CCR |= DMA_CCR_MINC;
+
+	// disable increment mode on peripheral address
+	DMA1_Channel4->CCR &= ~DMA_CCR_PINC;
 
 	// enable circular mode
 	DMA1_Channel4->CCR |= DMA_CCR_CIRC;
 
-	// set data transfer direction - memory -> peripheral
-	DMA1_Channel4->CCR |= DMA_CCR_DIR;
+	// enable interrpt after full transfer
+	DMA1_Channel4->CCR |= DMA_CCR_TCIE;
 }
 
 void dma_usart_tx_enable(void)
@@ -90,4 +105,5 @@ int main(void)
 	dma_usart_tx_init();
 	dma_usart_tx_enable();
 	usart1_enable();
+	while (1);
 }
